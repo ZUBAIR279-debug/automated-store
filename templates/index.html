@@ -1,0 +1,363 @@
+{% extends 'base.html' %}
+
+{% block title %}Store v3 — Premium Tech Storefront{% endblock %}
+
+{% block content %}
+
+<!-- ====== HERO SLIDER ====== -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-10">
+    <div
+        class="grid md:grid-cols-2 gap-8 items-center bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden p-6 md:p-10">
+        <div class="space-y-4 text-center md:text-left">
+            <span class="inline-block bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded-full">New
+                Collection 2026</span>
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 leading-tight">
+                Next-Gen <br /><span class="text-indigo-600">Tech Power</span>
+            </h1>
+            <p class="text-slate-500 text-sm max-w-sm mx-auto md:mx-0">iPhone 16 Pro · MacBook M4 · Samsung S24 Ultra —
+                the future is here.</p>
+            <a href="/shop"
+                class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-8 py-3.5 rounded-xl transition shadow-lg shadow-indigo-200">
+                Shop Now <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+        <div id="heroStack" class="relative flex justify-center items-center min-h-[240px]">
+            <div class="relative w-full max-w-sm mx-auto">
+                <img src="https://images.unsplash.com/photo-1696446701796-da61225697cc?w=400&h=400&fit=crop&auto=format"
+                    alt="iPhone 16 Pro"
+                    class="absolute -top-6 left-0 w-28 sm:w-32 rounded-2xl shadow-xl border-2 border-white rotate-[-8deg] hover:rotate-0 transition-transform duration-500" />
+                <img src="https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=400&h=400&fit=crop&auto=format"
+                    alt="MacBook Pro M4"
+                    class="absolute top-4 left-16 w-36 sm:w-44 rounded-2xl shadow-xl border-2 border-white rotate-[4deg] hover:rotate-0 transition-transform duration-500" />
+                <img src="https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=400&h=400&fit=crop&auto=format"
+                    alt="Samsung S24 Ultra"
+                    class="absolute -bottom-4 right-0 w-28 sm:w-32 rounded-2xl shadow-xl border-2 border-white rotate-[12deg] hover:rotate-0 transition-transform duration-500" />
+                <div class="h-48 sm:h-56"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====== CATEGORIES ====== -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+    <div class="flex flex-wrap justify-center gap-3 sm:gap-4" id="categoryFilters">
+        <button
+            class="category-btn bg-indigo-600 text-white px-5 py-2.5 rounded-full text-sm font-medium border-2 border-indigo-600 transition hover:bg-indigo-700"
+            data-category="All">All</button>
+        <button
+            class="category-btn bg-slate-50 text-slate-700 px-5 py-2.5 rounded-full text-sm font-medium border-2 border-slate-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300 transition"
+            data-category="Smartphones">📱 Smartphones</button>
+        <button
+            class="category-btn bg-slate-50 text-slate-700 px-5 py-2.5 rounded-full text-sm font-medium border-2 border-slate-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300 transition"
+            data-category="Laptops">💻 Laptops</button>
+        <button
+            class="category-btn bg-slate-50 text-slate-700 px-5 py-2.5 rounded-full text-sm font-medium border-2 border-slate-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300 transition"
+            data-category="Audio">🎧 Audio</button>
+        <button
+            class="category-btn bg-slate-50 text-slate-700 px-5 py-2.5 rounded-full text-sm font-medium border-2 border-slate-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300 transition"
+            data-category="Wearables">⌚ Wearables</button>
+        <button
+            class="category-btn bg-slate-50 text-slate-700 px-5 py-2.5 rounded-full text-sm font-medium border-2 border-slate-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300 transition"
+            data-category="Gaming">🎮 Gaming</button>
+        <button
+            class="category-btn bg-slate-50 text-slate-700 px-5 py-2.5 rounded-full text-sm font-medium border-2 border-slate-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300 transition"
+            data-category="Cameras">📷 Cameras</button>
+        <button
+            class="category-btn bg-slate-50 text-slate-700 px-5 py-2.5 rounded-full text-sm font-medium border-2 border-slate-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300 transition"
+            data-category="Monitors">🖥️ Monitors</button>
+        <button
+            class="category-btn bg-slate-50 text-slate-700 px-5 py-2.5 rounded-full text-sm font-medium border-2 border-slate-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300 transition"
+            data-category="Accessories">🔌 Accessories</button>
+    </div>
+</section>
+
+<!-- ====== PRODUCT GRID ====== -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+    <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+        {% for product in products %}
+        <div class="product-card bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
+            data-category="{{ product.category }}">
+            <div class="relative">
+                <img src="{{ product.image_url }}" alt="{{ product.name }}" class="w-full h-40 sm:h-48 object-cover" />
+                {% if product.cost_price < product.price %} <span class="badge-discount">-{{ ((1 -
+                    product.cost_price/product.price) * 100)|round(0)|int }}%</span>
+                    {% endif %}
+            </div>
+            <div class="p-3 space-y-2">
+                <h3 class="font-semibold text-sm text-slate-900 truncate">{{ product.name }}</h3>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-bold text-slate-900">${{ product.price }}</span>
+                    {% if product.cost_price < product.price %} <span class="text-xs text-slate-400 line-through">${{
+                        product.cost_price }}</span>
+                        {% endif %}
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <button
+                        class="view-details-btn w-full text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg py-1.5 transition"
+                        data-product-id="{{ product.id }}" data-product-name="{{ product.name }}"
+                        data-product-price="{{ product.price }}" data-product-cost="{{ product.cost_price }}"
+                        data-product-image="{{ product.image_url }}"
+                        data-product-description="{{ product.description }}">
+                        <i class="fas fa-eye mr-1"></i> View Details
+                    </button>
+                    <button
+                        class="add-to-cart-btn w-full text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg py-1.5 transition"
+                        data-product-id="{{ product.id }}" data-product-name="{{ product.name }}"
+                        data-product-price="{{ product.price }}" data-product-image="{{ product.image_url }}">
+                        <i class="fas fa-cart-plus mr-1"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ====== PRODUCT DETAIL MODAL ====== -->
+<div id="productModal" class="fixed inset-0 z-[1000] hidden bg-black/60 backdrop-blur-sm overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
+            <!-- Close Button -->
+            <button id="modalCloseBtn"
+                class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-2xl z-10 bg-white/80 rounded-full w-10 h-10 flex items-center justify-center shadow-lg transition hover:bg-white">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <!-- Modal Content -->
+            <div class="grid md:grid-cols-2 gap-6 p-6">
+                <!-- Left: Image -->
+                <div class="bg-slate-50 rounded-xl overflow-hidden">
+                    <img id="modalImage" src="" alt="Product" class="w-full h-auto object-cover aspect-square" />
+                </div>
+
+                <!-- Right: Details -->
+                <div class="space-y-4">
+                    <h2 id="modalName" class="text-2xl font-extrabold text-slate-900"></h2>
+
+                    <div class="flex items-center gap-3">
+                        <span id="modalPrice" class="text-2xl font-bold text-slate-900"></span>
+                        <span id="modalCost" class="text-sm text-slate-400 line-through"></span>
+                        <span
+                            class="bg-emerald-100 text-emerald-700 text-xs font-semibold px-2.5 py-0.5 rounded-full">In
+                            Stock</span>
+                    </div>
+
+                    <div>
+                        <p class="text-sm font-medium text-slate-700 mb-2">Storage</p>
+                        <div class="flex flex-wrap gap-2">
+                            <button
+                                class="storage-btn bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium border-2 border-indigo-600">256GB</button>
+                            <button
+                                class="storage-btn bg-white text-slate-700 px-4 py-1.5 rounded-lg text-sm font-medium border-2 border-slate-200 hover:border-indigo-300 transition">512GB</button>
+                            <button
+                                class="storage-btn bg-white text-slate-700 px-4 py-1.5 rounded-lg text-sm font-medium border-2 border-slate-200 hover:border-indigo-300 transition">1TB</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p class="text-sm font-medium text-slate-700 mb-2">Color</p>
+                        <div class="flex flex-wrap gap-3">
+                            <span
+                                class="color-circle w-8 h-8 rounded-full border-2 border-indigo-600 ring-2 ring-indigo-200 cursor-pointer"
+                                style="background:#1e293b;"></span>
+                            <span
+                                class="color-circle w-8 h-8 rounded-full border-2 border-slate-200 cursor-pointer hover:border-indigo-400"
+                                style="background:#f8fafc;"></span>
+                            <span
+                                class="color-circle w-8 h-8 rounded-full border-2 border-slate-200 cursor-pointer hover:border-indigo-400"
+                                style="background:#b91c1c;"></span>
+                            <span
+                                class="color-circle w-8 h-8 rounded-full border-2 border-slate-200 cursor-pointer hover:border-indigo-400"
+                                style="background:#d97706;"></span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <button id="modalAddToCart"
+                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition shadow-lg shadow-indigo-200">
+                            <i class="fas fa-cart-plus mr-2"></i> Add to Cart
+                        </button>
+                        <a href="/checkout"
+                            class="block w-full bg-emerald-600 hover:bg-emerald-700 text-white text-center font-semibold py-2.5 rounded-xl transition">
+                            <i class="fas fa-bolt mr-2"></i> Proceed to Checkout
+                        </a>
+                    </div>
+
+                    <p id="modalDescription" class="text-sm text-slate-500 border-t border-slate-200 pt-4"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    (function () {
+        'use strict';
+
+        // ---- Product Modal Logic ----
+        const modal = document.getElementById('productModal');
+        const modalClose = document.getElementById('modalCloseBtn');
+        const modalImage = document.getElementById('modalImage');
+        const modalName = document.getElementById('modalName');
+        const modalPrice = document.getElementById('modalPrice');
+        const modalCost = document.getElementById('modalCost');
+        const modalDescription = document.getElementById('modalDescription');
+        const modalAddToCart = document.getElementById('modalAddToCart');
+        let currentProduct = { id: null, name: '', price: 0 };
+
+        function openModal(productData) {
+            modalImage.src = productData.image;
+            modalImage.alt = productData.name;
+            modalName.textContent = productData.name;
+            modalPrice.textContent = `$${productData.price}`;
+            if (productData.cost < productData.price) {
+                modalCost.textContent = `$${productData.cost}`;
+                modalCost.style.display = 'inline';
+            } else {
+                modalCost.style.display = 'none';
+            }
+            modalDescription.textContent = productData.description;
+            currentProduct = { id: parseInt(productData.id), name: productData.name, price: parseFloat(productData.price) };
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            if (typeof gsap !== 'undefined') {
+                gsap.from(modal.querySelector('.bg-white'), {
+                    opacity: 0, scale: 0.9, y: 30, duration: 0.35, ease: 'power2.out'
+                });
+            }
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        modalClose.addEventListener('click', closeModal);
+        modal.addEventListener('click', function (e) { if (e.target === this) closeModal(); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+
+        // ---- View Details ----
+        document.querySelectorAll('.view-details-btn').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const productData = {
+                    id: this.dataset.productId,
+                    name: this.dataset.productName,
+                    price: parseFloat(this.dataset.productPrice),
+                    cost: parseFloat(this.dataset.productCost || 0),
+                    image: this.dataset.productImage,
+                    description: this.dataset.productDescription || 'Premium tech product with cutting-edge features.'
+                };
+                openModal(productData);
+            });
+        });
+
+        // ---- Add to Cart (on cards) ----
+        document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const id = parseInt(this.dataset.productId);
+                const name = this.dataset.productName;
+                const price = parseFloat(this.dataset.productPrice);
+                const image = this.dataset.productImage || '';
+                window.addToCart(id, name, price, image);
+            });
+        });
+
+        // ---- Modal Add to Cart ----
+        modalAddToCart.addEventListener('click', function () {
+            if (currentProduct.id) {
+                window.addToCart(currentProduct.id, currentProduct.name, currentProduct.price, document.getElementById('modalImage').src);
+            }
+        });
+
+        // ---- Storage & Color buttons ----
+        document.querySelectorAll('.storage-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.storage-btn').forEach(b => {
+                    b.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
+                    b.classList.add('bg-white', 'text-slate-700', 'border-slate-200');
+                });
+                this.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
+                this.classList.remove('bg-white', 'text-slate-700', 'border-slate-200');
+            });
+        });
+
+        document.querySelectorAll('.color-circle').forEach(c => {
+            c.addEventListener('click', function () {
+                document.querySelectorAll('.color-circle').forEach(c2 => {
+                    c2.classList.remove('border-indigo-600', 'ring-2', 'ring-indigo-200');
+                    c2.classList.add('border-slate-200');
+                });
+                this.classList.add('border-indigo-600', 'ring-2', 'ring-indigo-200');
+                this.classList.remove('border-slate-200');
+            });
+        });
+
+        // ---- Category Filtering ----
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const productCards = document.querySelectorAll('.product-card');
+
+        function filterProducts(category) {
+            productCards.forEach(card => {
+                const cardCategory = card.getAttribute('data-category');
+                if (category === 'All' || cardCategory === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            categoryButtons.forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
+                btn.classList.add('bg-slate-50', 'text-slate-700', 'border-slate-200');
+                if (btn.getAttribute('data-category') === category) {
+                    btn.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
+                    btn.classList.remove('bg-slate-50', 'text-slate-700', 'border-slate-200');
+                }
+            });
+        }
+
+        categoryButtons.forEach(btn => {
+            btn.addEventListener('click', function () {
+                filterProducts(this.getAttribute('data-category'));
+            });
+        });
+        filterProducts('All');
+
+        // ---- GSAP Scroll ----
+        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+            gsap.registerPlugin(ScrollTrigger);
+            gsap.from('.product-card', {
+                scrollTrigger: { trigger: '#productGrid', start: 'top 90%', toggleActions: 'play none none none' },
+                opacity: 0, y: 40, duration: 0.6, stagger: 0.08, ease: 'power2.out'
+            });
+        }
+
+        // ---- Hero 3D Tilt ----
+        const heroStack = document.getElementById('heroStack');
+        if (heroStack && typeof gsap !== 'undefined') {
+            const images = heroStack.querySelectorAll('img');
+            heroStack.addEventListener('mousemove', function (e) {
+                const rect = this.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width - 0.5;
+                const y = (e.clientY - rect.top) / rect.height - 0.5;
+                images.forEach((img, i) => {
+                    const rotX = y * 6 * (i + 0.5) * 0.5;
+                    const rotY = x * -6 * (i + 0.5) * 0.5;
+                    gsap.to(img, { rotationX: rotX, rotationY: rotY, duration: 0.6, ease: 'power2.out', overwrite: 'auto' });
+                });
+            });
+            heroStack.addEventListener('mouseleave', function () {
+                images.forEach(img => {
+                    gsap.to(img, { rotationX: 0, rotationY: 0, duration: 0.8, ease: 'elastic.out(1, 0.4)' });
+                });
+            });
+        }
+
+        console.log('✅ index.html — fully loaded with dynamic products and cart');
+    })();
+</script>
+{% endblock %}

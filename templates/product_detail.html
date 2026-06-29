@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+
+{% block title %}Product Detail — Store v3{% endblock %}
+
+{% block content %}
+
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
+
+        <!-- ====== LEFT: MEDIA STATION ====== -->
+        <div>
+            <!-- Main Image -->
+            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm mb-4">
+                <img id="mainImage"
+                    src="https://images.unsplash.com/photo-1696446701796-da61225697cc?w=600&h=600&fit=crop&auto=format"
+                    alt="Main Product" class="w-full h-auto object-cover aspect-square" />
+            </div>
+            <!-- Thumbnail Gallery -->
+            <div class="flex gap-3 overflow-x-auto pb-2">
+                <img src="https://images.unsplash.com/photo-1696446701796-da61225697cc?w=100&h=100&fit=crop&auto=format"
+                    alt="Thumb 1"
+                    class="thumb-img w-20 h-20 rounded-xl border-2 border-indigo-600 cursor-pointer object-cover shrink-0 hover:opacity-80 transition"
+                    data-src="https://images.unsplash.com/photo-1696446701796-da61225697cc?w=600&h=600&fit=crop&auto=format" />
+                <img src="https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=100&h=100&fit=crop&auto=format"
+                    alt="Thumb 2"
+                    class="thumb-img w-20 h-20 rounded-xl border-2 border-transparent cursor-pointer object-cover shrink-0 hover:opacity-80 transition"
+                    data-src="https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=600&h=600&fit=crop&auto=format" />
+                <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=100&h=100&fit=crop&auto=format"
+                    alt="Thumb 3"
+                    class="thumb-img w-20 h-20 rounded-xl border-2 border-transparent cursor-pointer object-cover shrink-0 hover:opacity-80 transition"
+                    data-src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600&h=600&fit=crop&auto=format" />
+                <img src="https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=100&h=100&fit=crop&auto=format"
+                    alt="Thumb 4"
+                    class="thumb-img w-20 h-20 rounded-xl border-2 border-transparent cursor-pointer object-cover shrink-0 hover:opacity-80 transition"
+                    data-src="https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=600&h=600&fit=crop&auto=format" />
+            </div>
+        </div>
+
+        <!-- ====== RIGHT: SPECS & SELECTION ====== -->
+        <div class="space-y-5">
+            <h1 class="text-3xl font-extrabold text-slate-900">iPhone 16 Pro Max</h1>
+            <div class="flex items-center gap-3">
+                <span class="text-2xl font-bold text-slate-900">$1,199</span>
+                <span class="text-sm text-slate-400 line-through">$1,329</span>
+                <span class="bg-emerald-100 text-emerald-700 text-xs font-semibold px-2.5 py-0.5 rounded-full">In
+                    Stock</span>
+            </div>
+
+            <!-- Variant: Storage -->
+            <div>
+                <p class="text-sm font-medium text-slate-700 mb-2">Storage</p>
+                <div class="flex flex-wrap gap-2">
+                    <button
+                        class="storage-btn bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium border-2 border-indigo-600">256GB</button>
+                    <button
+                        class="storage-btn bg-white text-slate-700 px-4 py-1.5 rounded-lg text-sm font-medium border-2 border-slate-200 hover:border-indigo-300 transition">512GB</button>
+                    <button
+                        class="storage-btn bg-white text-slate-700 px-4 py-1.5 rounded-lg text-sm font-medium border-2 border-slate-200 hover:border-indigo-300 transition">1TB</button>
+                </div>
+            </div>
+
+            <!-- Variant: Color -->
+            <div>
+                <p class="text-sm font-medium text-slate-700 mb-2">Color</p>
+                <div class="flex flex-wrap gap-3">
+                    <span
+                        class="color-circle w-8 h-8 rounded-full border-2 border-indigo-600 ring-2 ring-indigo-200 cursor-pointer"
+                        style="background:#1e293b;"></span>
+                    <span
+                        class="color-circle w-8 h-8 rounded-full border-2 border-slate-200 cursor-pointer hover:border-indigo-400"
+                        style="background:#f8fafc;"></span>
+                    <span
+                        class="color-circle w-8 h-8 rounded-full border-2 border-slate-200 cursor-pointer hover:border-indigo-400"
+                        style="background:#b91c1c;"></span>
+                    <span
+                        class="color-circle w-8 h-8 rounded-full border-2 border-slate-200 cursor-pointer hover:border-indigo-400"
+                        style="background:#d97706;"></span>
+                </div>
+            </div>
+
+            <!-- Checkout Button -->
+            <a href="/checkout"
+                class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-center font-semibold py-3.5 rounded-xl transition shadow-lg shadow-indigo-200">
+                Proceed to Checkout <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+
+            <!-- Description -->
+            <p class="text-sm text-slate-500 border-t border-slate-200 pt-4">The iPhone 16 Pro Max features a 6.9-inch
+                OLED display, A18 Pro chip, and a 48MP camera system with 5x optical zoom. Available in 256GB, 512GB,
+                and 1TB variants.</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- ====== AI MANAGEMENT BOT WIDGET ====== -->
+<div id="aiWidget" class="fixed bottom-6 right-6 z-50">
+    <!-- Pulsing Glowing Badge -->
+    <button id="aiToggle"
+        class="relative bg-indigo-600 text-white w-14 h-14 rounded-full shadow-2xl shadow-indigo-400/50 flex items-center justify-center text-2xl hover:bg-indigo-700 transition">
+        <i class="fas fa-robot"></i>
+        <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-ping"></span>
+        <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full"></span>
+    </button>
+
+    <!-- Chat Interface -->
+    <div id="aiChat"
+        class="hidden absolute bottom-20 right-0 w-80 sm:w-96 bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden smooth-toggle">
+        <div class="bg-indigo-600 text-white px-4 py-3 flex items-center justify-between">
+            <span class="font-semibold"><i class="fas fa-robot mr-2"></i>AI Assistant</span>
+            <button id="aiClose" class="text-white/80 hover:text-white"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="aiMessages" class="h-60 overflow-y-auto p-4 space-y-2 bg-slate-50">
+            <div class="bg-indigo-100 text-slate-800 rounded-xl px-3 py-2 text-sm max-w-[85%]">👋 Hello! How can I help
+                you today?</div>
+        </div>
+        <div class="p-3 border-t border-slate-200 flex flex-wrap gap-2">
+            <button
+                class="ai-pill bg-slate-100 hover:bg-indigo-50 text-slate-700 text-xs px-3 py-1.5 rounded-full border border-slate-200 transition">📦
+                Check Delivery Schedule</button>
+            <button
+                class="ai-pill bg-slate-100 hover:bg-indigo-50 text-slate-700 text-xs px-3 py-1.5 rounded-full border border-slate-200 transition">🔍
+                Verify Specifications</button>
+            <button
+                class="ai-pill bg-slate-100 hover:bg-indigo-50 text-slate-700 text-xs px-3 py-1.5 rounded-full border border-slate-200 transition">📞
+                Contact Support</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    (function () {
+        'use strict';
+
+        // ---- Thumbnail Gallery ----
+        const mainImage = document.getElementById('mainImage');
+        const thumbs = document.querySelectorAll('.thumb-img');
+        thumbs.forEach(thumb => {
+            thumb.addEventListener('click', function () {
+                const src = this.dataset.src;
+                if (src) {
+                    mainImage.src = src;
+                    thumbs.forEach(t => t.classList.remove('border-indigo-600'));
+                    this.classList.add('border-indigo-600');
+                }
+            });
+        });
+
+        // ---- Storage buttons ----
+        const storageBtns = document.querySelectorAll('.storage-btn');
+        storageBtns.forEach(btn => {
+            btn.addEventListener('click', function () {
+                storageBtns.forEach(b => {
+                    b.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
+                    b.classList.add('bg-white', 'text-slate-700', 'border-slate-200');
+                });
+                this.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
+                this.classList.remove('bg-white', 'text-slate-700', 'border-slate-200');
+            });
+        });
+
+        // ---- Color circles ----
+        const colorCircles = document.querySelectorAll('.color-circle');
+        colorCircles.forEach(c => {
+            c.addEventListener('click', function () {
+                colorCircles.forEach(c2 => {
+                    c2.classList.remove('border-indigo-600', 'ring-2', 'ring-indigo-200');
+                    c2.classList.add('border-slate-200');
+                });
+                this.classList.add('border-indigo-600', 'ring-2', 'ring-indigo-200');
+                this.classList.remove('border-slate-200');
+            });
+        });
+
+        // ---- AI Chat Widget ----
+        const aiToggle = document.getElementById('aiToggle');
+        const aiChat = document.getElementById('aiChat');
+        const aiClose = document.getElementById('aiClose');
+        const aiMessages = document.getElementById('aiMessages');
+        const aiPills = document.querySelectorAll('.ai-pill');
+
+        function toggleChat(open) {
+            if (open) {
+                aiChat.classList.remove('hidden');
+                if (typeof gsap !== 'undefined') {
+                    gsap.from(aiChat, { opacity: 0, scale: 0.85, y: 20, duration: 0.3, ease: 'power2.out' });
+                }
+            } else {
+                aiChat.classList.add('hidden');
+            }
+        }
+
+        if (aiToggle && aiChat && aiClose) {
+            let chatOpen = false;
+            aiToggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                chatOpen = !chatOpen;
+                toggleChat(chatOpen);
+            });
+            aiClose.addEventListener('click', function () {
+                chatOpen = false;
+                toggleChat(false);
+            });
+            document.addEventListener('click', function (e) {
+                const widget = document.getElementById('aiWidget');
+                if (widget && !widget.contains(e.target)) {
+                    chatOpen = false;
+                    toggleChat(false);
+                }
+            });
+        }
+
+        // ---- AI Pill responses ----
+        aiPills.forEach(pill => {
+            pill.addEventListener('click', function () {
+                const text = this.textContent.trim();
+                let response = '';
+                if (text.includes('Delivery')) {
+                    response = '📦 Delivery typically takes 2-4 business days. Expedited shipping available at checkout.';
+                } else if (text.includes('Specifications')) {
+                    response = '🔍 Full specs: 6.9" OLED, A18 Pro chip, 48MP camera, 5x optical zoom, up to 1TB storage.';
+                } else if (text.includes('Support')) {
+                    response = '📞 You can reach our support team at support@store.com or call +1-800-555-0199.';
+                } else {
+                    response = '✅ Got it! How else can I assist you?';
+                }
+                // Add user message
+                const userDiv = document.createElement('div');
+                userDiv.className = 'bg-indigo-600 text-white rounded-xl px-3 py-2 text-sm max-w-[85%] ml-auto';
+                userDiv.textContent = text;
+                aiMessages.appendChild(userDiv);
+                // Add bot response
+                const botDiv = document.createElement('div');
+                botDiv.className = 'bg-indigo-100 text-slate-800 rounded-xl px-3 py-2 text-sm max-w-[85%]';
+                botDiv.textContent = response;
+                aiMessages.appendChild(botDiv);
+                // Scroll to bottom
+                aiMessages.scrollTop = aiMessages.scrollHeight;
+            });
+        });
+
+        console.log('✅ product_detail.html — AI chat widget ready');
+    })();
+</script>
+{% endblock %}

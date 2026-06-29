@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Management — Store v3{% endblock %}
+
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+                <h1 class="text-2xl font-bold text-slate-900">Dispatch System</h1>
+                <div class="flex items-center gap-2">
+                        <span class="text-xs text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full"><i
+                                        class="fas fa-sync-alt mr-1"></i> Auto-sync: Live</span>
+                </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                <div class="overflow-x-auto" style="max-height:550px; overflow-y:auto;">
+                        <table class="w-full text-sm">
+                                <thead class="bg-slate-50 text-slate-600 text-xs uppercase tracking-wider sticky top-0">
+                                        <tr>
+                                                <th class="px-4 py-3 text-left">Order ID</th>
+                                                <th class="px-4 py-3 text-left">Customer</th>
+                                                <th class="px-4 py-3 text-left">Total</th>
+                                                <th class="px-4 py-3 text-left">Payment</th>
+                                                <th class="px-4 py-3 text-left">Invoice</th>
+                                                <th class="px-4 py-3 text-left">Shipping Status</th>
+                                                <th class="px-4 py-3 text-left">Action</th>
+                                        </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                        {% for order in orders %}
+                                        <tr class="hover:bg-slate-50 transition-colors">
+                                                <td class="px-4 py-3 font-medium text-slate-900">#{{ order.id }}</td>
+
+                                                <td class="px-4 py-3">
+                                                        {{ order.customer_name }}<br>
+                                                        <span class="text-xs text-slate-500">{{ order.customer_phone
+                                                                }}</span>
+                                                </td>
+
+                                                <td class="px-4 py-3 font-semibold text-slate-700">${{
+                                                        "%.2f"|format(order.total_billing) }}</td>
+
+                                                <td class="px-4 py-3">
+                                                        <span
+                                                                class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">{{
+                                                                order.payment_method }}</span>
+                                                </td>
+
+                                                <td class="px-4 py-3">
+                                                        {% if order.payment_status == 'Verified' %}
+                                                        <span
+                                                                class="text-xs bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full"><i
+                                                                        class="fas fa-check-circle mr-1"></i>
+                                                                Verified</span>
+                                                        {% else %}
+                                                        <span
+                                                                class="text-xs bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full"><i
+                                                                        class="fas fa-clock mr-1"></i> {{
+                                                                order.payment_status }}</span>
+                                                        {% endif %}
+                                                </td>
+
+                                                <td class="px-4 py-3">
+                                                        <span
+                                                                class="bg-blue-50 text-blue-600 text-xs px-2.5 py-1 rounded-full">{{
+                                                                order.status }}</span>
+                                                </td>
+                                        </tr>
+                                        {% else %}
+                                        <tr>
+                                                <td colspan="6" class="px-4 py-8 text-center text-slate-500">
+                                                        Abhi tak koi order nahi aya. Naya order place karein!
+                                                </td>
+                                        </tr>
+                                        {% endfor %}
+                                </tbody>
+                        </table>
+                </div>
+        </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+        (function () {
+                'use strict';
+                if (typeof gsap !== 'undefined') {
+                        gsap.from('tr', {
+                                scrollTrigger: {
+                                        trigger: 'table',
+                                        start: 'top 95%',
+                                        toggleActions: 'play none none none'
+                                },
+                                opacity: 0,
+                                x: -10,
+                                duration: 0.3,
+                                stagger: 0.03,
+                                ease: 'power1.out'
+                        });
+                }
+                console.log('✅ admin/orders.html — dispatch system ready');
+        })();
+</script>
+{% endblock %}

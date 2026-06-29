@@ -1,0 +1,549 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout — Store v3{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Order Rocket Animation Styles */
+    .rocket-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(180deg, #0b1120 0%, #1e293b 100%);
+        z-index: 10000;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .rocket-container.active {
+        display: flex;
+    }
+
+    .rocket {
+        font-size: 8rem;
+        transform: rotate(-45deg);
+        animation: rocketFloat 2s ease-in-out infinite;
+    }
+
+    @keyframes rocketFloat {
+
+        0%,
+        100% {
+            transform: rotate(-45deg) translateY(0);
+        }
+
+        50% {
+            transform: rotate(-45deg) translateY(-20px);
+        }
+    }
+
+    .confetti-piece {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: #fbbf24;
+        border-radius: 2px;
+        animation: confettiFall 3s linear infinite;
+    }
+
+    @keyframes confettiFall {
+        0% {
+            transform: translateY(-100px) rotate(0deg);
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateY(110vh) rotate(720deg);
+            opacity: 0;
+        }
+    }
+
+    .order-summary-popup {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(12px);
+        border-radius: 2rem;
+        padding: 2rem;
+        max-width: 500px;
+        width: 90%;
+        margin-top: 2rem;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+        text-align: center;
+        position: relative;
+        z-index: 10;
+    }
+
+    .order-summary-popup .order-id {
+        font-size: 0.8rem;
+        color: #64748b;
+        letter-spacing: 2px;
+    }
+
+    .order-summary-popup .total {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #4f46e5;
+    }
+
+    .order-summary-popup .delivery-estimate {
+        font-size: 0.9rem;
+        color: #0f172a;
+        background: #e2e8f0;
+        padding: 0.3rem 1rem;
+        border-radius: 20px;
+        display: inline-block;
+        margin-top: 0.5rem;
+    }
+
+    .fun-fact {
+        font-size: 0.9rem;
+        color: #475569;
+        margin-top: 0.5rem;
+        font-style: italic;
+        background: #f1f5f9;
+        padding: 0.5rem 1rem;
+        border-radius: 12px;
+    }
+
+    .share-wa-btn {
+        display: inline-block;
+        background: #25d366;
+        color: white;
+        padding: 0.6rem 1.5rem;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        margin-top: 1rem;
+        transition: transform 0.2s;
+    }
+
+    .share-wa-btn:hover {
+        transform: scale(1.05);
+        color: white;
+    }
+
+    /* Confetti container */
+    .confetti-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-2xl font-bold text-slate-900 mb-6">Secure Checkout</h1>
+
+    <div class="grid lg:grid-cols-3 gap-8">
+
+        <!-- LEFT: Customer Data + Payment -->
+        <div class="lg:col-span-2 space-y-6">
+
+            <!-- Personal Info -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                <h3 class="font-semibold text-slate-900 mb-4">Personal Information</h3>
+                <form id="checkoutForm">
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-medium text-slate-600">Full Name</label>
+                            <input type="text" name="customer_name" placeholder="John Doe" required
+                                class="w-full mt-1 px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        </div>
+                        <div>
+                            <label class="text-xs font-medium text-slate-600">WhatsApp Number</label>
+                            <input type="tel" name="customer_whatsapp" placeholder="+92 300 1234567" required
+                                class="w-full mt-1 px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label class="text-xs font-medium text-slate-600">Delivery Address</label>
+                        <textarea name="delivery_address" rows="2" placeholder="Street, City, State, ZIP" required
+                            class="w-full mt-1 px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Payment Matrix -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                <h3 class="font-semibold text-slate-900 mb-4">Payment Method</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="paymentOptions">
+                    <div class="payment-option border-2 border-slate-200 rounded-xl p-3 text-center cursor-pointer hover:border-indigo-300 transition"
+                        data-target="cardFields">
+                        <i class="fab fa-cc-visa text-2xl text-slate-500"></i>
+                        <p class="text-xs font-medium text-slate-700 mt-1">Visa/Mastercard</p>
+                    </div>
+                    <div class="payment-option border-2 border-slate-200 rounded-xl p-3 text-center cursor-pointer hover:border-indigo-300 transition"
+                        data-target="easypaisaFields">
+                        <i class="fas fa-mobile-alt text-2xl text-emerald-600"></i>
+                        <p class="text-xs font-medium text-slate-700 mt-1">EasyPaisa</p>
+                    </div>
+                    <div class="payment-option border-2 border-slate-200 rounded-xl p-3 text-center cursor-pointer hover:border-indigo-300 transition"
+                        data-target="jazzcashFields">
+                        <i class="fas fa-mobile-alt text-2xl text-orange-500"></i>
+                        <p class="text-xs font-medium text-slate-700 mt-1">JazzCash</p>
+                    </div>
+                    <div class="payment-option border-2 border-slate-200 rounded-xl p-3 text-center cursor-pointer hover:border-indigo-300 transition"
+                        data-target="codFields">
+                        <i class="fas fa-truck text-2xl text-slate-500"></i>
+                        <p class="text-xs font-medium text-slate-700 mt-1">Cash on Delivery</p>
+                    </div>
+                </div>
+
+                <!-- Dynamic Fields -->
+                <div id="cardFields"
+                    class="payment-fields hidden mt-4 p-4 bg-indigo-50/30 border border-indigo-200 rounded-xl smooth-toggle">
+                    <div class="grid sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs font-medium text-slate-600">Card Number</label>
+                            <input type="text" placeholder="4111 1111 1111 1111"
+                                class="w-full mt-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                        </div>
+                        <div>
+                            <label class="text-xs font-medium text-slate-600">CVV</label>
+                            <input type="text" placeholder="123"
+                                class="w-full mt-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <label class="text-xs font-medium text-slate-600">Expiry (MM/YY)</label>
+                        <input type="text" placeholder="12/26"
+                            class="w-full mt-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                    </div>
+                </div>
+                <div id="easypaisaFields"
+                    class="payment-fields hidden mt-4 p-4 bg-indigo-50/30 border border-indigo-200 rounded-xl smooth-toggle">
+                    <label class="text-xs font-medium text-slate-600">EasyPaisa Account Number</label>
+                    <input type="text" placeholder="03XX-XXXXXXX"
+                        class="w-full mt-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                </div>
+                <div id="jazzcashFields"
+                    class="payment-fields hidden mt-4 p-4 bg-indigo-50/30 border border-indigo-200 rounded-xl smooth-toggle">
+                    <label class="text-xs font-medium text-slate-600">JazzCash Account Number</label>
+                    <input type="text" placeholder="03XX-XXXXXXX"
+                        class="w-full mt-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                </div>
+                <div id="codFields"
+                    class="payment-fields hidden mt-4 p-4 bg-indigo-50/30 border border-indigo-200 rounded-xl smooth-toggle">
+                    <p class="text-sm text-slate-600">You will pay in cash upon delivery. No additional fees.</p>
+                </div>
+
+                <!-- Hidden input to store selected payment method -->
+                <input type="hidden" id="selectedPayment" name="payment_method" value="COD">
+            </div>
+        </div>
+
+        <!-- RIGHT: Order Summary -->
+        <div class="lg:col-span-1">
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm sticky top-24">
+                <h3 class="font-semibold text-slate-900 mb-4">Order Summary</h3>
+                <div id="cartItemsSummary" class="space-y-2 text-sm max-h-40 overflow-y-auto">
+                    <!-- Items will be rendered from localStorage -->
+                </div>
+                <div class="space-y-2 text-sm border-t border-slate-200 pt-2 mt-2">
+                    <div class="flex justify-between"><span class="text-slate-500">Subtotal</span><span
+                            id="subtotalDisplay" class="font-medium text-slate-900">$0</span></div>
+                    <div class="flex justify-between"><span class="text-slate-500">Shipping</span><span
+                            class="font-medium text-slate-900">$29</span></div>
+                    <div class="flex justify-between"><span class="text-slate-500">Tax (est.)</span><span
+                            class="font-medium text-slate-900">$0</span></div>
+                    <div class="border-t border-slate-200 pt-2 mt-2 flex justify-between text-lg font-bold">
+                        <span>Total</span>
+                        <span id="totalDisplay" class="text-indigo-600">$0</span>
+                    </div>
+                </div>
+                <button id="placeOrderBtn"
+                    class="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-indigo-200">
+                    <i class="fas fa-rocket mr-2"></i> Place Order
+                </button>
+                <p class="text-xs text-slate-400 text-center mt-3"><i class="fas fa-shield-alt mr-1"></i> Secure
+                    checkout · SSL encrypted</p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- ORDER ROCKET LAUNCH CONFIRMATION OVERLAY -->
+<!-- ============================================================ -->
+<div id="rocketOverlay" class="rocket-container">
+    <div class="confetti-container" id="confettiContainer"></div>
+    <div class="rocket" id="rocketEmoji">🚀</div>
+    <div class="order-summary-popup" id="orderSummaryPopup">
+        <div class="order-id" id="orderIdDisplay">#ORD-XXXX</div>
+        <div class="total" id="orderTotalDisplay">$0.00</div>
+        <div class="delivery-estimate" id="deliveryEstimate">📦 Estimated Delivery: 2-4 business days</div>
+        <div class="fun-fact" id="funFact">💡 Fun Fact: This product is powered by AI!</div>
+        <a href="#" id="shareWhatsAppBtn" class="share-wa-btn" target="_blank">
+            <i class="fab fa-whatsapp mr-2"></i> Share Order
+        </a>
+        <button id="continueShoppingBtn"
+            class="block w-full mt-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium py-2 rounded-xl transition text-sm">
+            Continue Shopping
+        </button>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    (function () {
+        'use strict';
+
+        // ================================================
+        // 1. CART DATA FROM localStorage
+        // ================================================
+        function getCart() {
+            return JSON.parse(localStorage.getItem('cart') || '[]');
+        }
+
+        function updateOrderSummary() {
+            const cart = getCart();
+            const container = document.getElementById('cartItemsSummary');
+            const subtotalEl = document.getElementById('subtotalDisplay');
+            const totalEl = document.getElementById('totalDisplay');
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="text-slate-400 text-sm">Your cart is empty.</p>';
+                subtotalEl.textContent = '$0';
+                totalEl.textContent = '$0';
+                return;
+            }
+
+            let html = '';
+            let subtotal = 0;
+            cart.forEach(item => {
+                subtotal += item.price * item.quantity;
+                html += `<div class="flex justify-between text-xs"><span>${item.name} × ${item.quantity}</span><span>$${(item.price * item.quantity).toFixed(2)}</span></div>`;
+            });
+            container.innerHTML = html;
+            subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+            const shipping = 29;
+            const total = subtotal + shipping;
+            totalEl.textContent = `$${total.toFixed(2)}`;
+        }
+
+        updateOrderSummary();
+
+        // ================================================
+        // 2. PAYMENT OPTION TOGGLES
+        // ================================================
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        const allFields = document.querySelectorAll('.payment-fields');
+        const selectedPaymentInput = document.getElementById('selectedPayment');
+
+        paymentOptions.forEach(opt => {
+            opt.addEventListener('click', function () {
+                paymentOptions.forEach(o => {
+                    o.classList.remove('border-indigo-600', 'bg-indigo-50/30');
+                    o.classList.add('border-slate-200');
+                });
+                this.classList.add('border-indigo-600', 'bg-indigo-50/30');
+                this.classList.remove('border-slate-200');
+
+                const targetId = this.dataset.target;
+                allFields.forEach(f => f.classList.add('hidden'));
+                const target = document.getElementById(targetId);
+                if (target) target.classList.remove('hidden');
+
+                // Set payment method value
+                const label = this.querySelector('p')?.textContent?.trim() || 'COD';
+                selectedPaymentInput.value = label;
+            });
+        });
+
+        // Default: select COD
+        if (paymentOptions.length > 0) {
+            const codOption = document.querySelector('.payment-option[data-target="codFields"]');
+            if (codOption) codOption.click();
+        }
+
+        // ================================================
+        // 3. PLACE ORDER – AJAX with ROCKET LAUNCH
+        // ================================================
+        const placeOrderBtn = document.getElementById('placeOrderBtn');
+        const checkoutForm = document.getElementById('checkoutForm');
+        const rocketOverlay = document.getElementById('rocketOverlay');
+        const rocketEmoji = document.getElementById('rocketEmoji');
+        const orderIdDisplay = document.getElementById('orderIdDisplay');
+        const orderTotalDisplay = document.getElementById('orderTotalDisplay');
+        const deliveryEstimate = document.getElementById('deliveryEstimate');
+        const funFact = document.getElementById('funFact');
+        const shareWhatsAppBtn = document.getElementById('shareWhatsAppBtn');
+        const continueShoppingBtn = document.getElementById('continueShoppingBtn');
+        const confettiContainer = document.getElementById('confettiContainer');
+
+        // Fun facts database (based on products)
+        const funFacts = [
+            "Did you know? The iPhone 16 Pro Max has a titanium frame!",
+            "The MacBook Pro M4 can edit 8K video effortlessly.",
+            "iPad Pro M4 features an Ultra Retina XDR display.",
+            "AirPods Max have 40mm dynamic drivers.",
+            "PlayStation 5 Pro supports 8K gaming.",
+            "Sony WH-1000XM5 has industry-leading noise cancellation.",
+            "Logitech MX Master 3S is the ultimate productivity mouse.",
+            "Keychron Q1 Pro is fully customizable with QMK/VIA.",
+            "DJI Avata 2 offers immersive FPV flying.",
+            "Samsung Odyssey Neo G9 is a 57-inch curved monster!",
+            "Apple Watch Ultra 2 is designed for extreme sports.",
+            "ASUS ROG Ally X is a handheld gaming PC.",
+            "Nintendo Switch OLED has a vibrant 7-inch screen.",
+            "Anker Prime Power Bank delivers 140W fast charging.",
+            "GoPro Hero 13 captures 5.3K video with HyperSmooth 6.0."
+        ];
+
+        function launchRocket(orderData) {
+            // Show overlay
+            rocketOverlay.classList.add('active');
+
+            // Animate rocket
+            if (typeof gsap !== 'undefined') {
+                // Rocket lift-off
+                gsap.to(rocketEmoji, {
+                    y: -150,
+                    rotation: 720,
+                    scale: 0.5,
+                    duration: 1.5,
+                    ease: 'power4.out',
+                    onComplete: function () {
+                        gsap.to(rocketEmoji, {
+                            y: 0,
+                            rotation: 0,
+                            scale: 1,
+                            duration: 0.5,
+                            ease: 'bounce.out'
+                        });
+                    }
+                });
+
+                // Confetti pieces (create 50 random pieces)
+                const colors = ['#fbbf24', '#f472b6', '#34d399', '#60a5fa', '#a78bfa', '#fb923c'];
+                for (let i = 0; i < 50; i++) {
+                    const piece = document.createElement('div');
+                    piece.className = 'confetti-piece';
+                    const size = 5 + Math.random() * 10;
+                    piece.style.width = size + 'px';
+                    piece.style.height = size + 'px';
+                    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    piece.style.left = Math.random() * 100 + '%';
+                    piece.style.top = -10 + '%';
+                    piece.style.animationDuration = (2 + Math.random() * 2) + 's';
+                    piece.style.animationDelay = (Math.random() * 1.5) + 's';
+                    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                    confettiContainer.appendChild(piece);
+                }
+            }
+
+            // Update popup details
+            const orderId = orderData.order_id || 'ORD-' + Math.floor(Math.random() * 9000 + 1000);
+            const total = orderData.total || 0;
+            orderIdDisplay.textContent = '#' + orderId;
+            orderTotalDisplay.textContent = '$' + total.toFixed(2);
+
+            // Random delivery estimate (2-5 days)
+            const days = Math.floor(Math.random() * 4) + 2;
+            deliveryEstimate.textContent = `📦 Estimated Delivery: ${days} business days`;
+
+            // Random fun fact
+            const factIndex = Math.floor(Math.random() * funFacts.length);
+            funFact.textContent = '💡 ' + funFacts[factIndex];
+
+            // Share WhatsApp link
+            const shareText = `🎉 I just placed an order #${orderId} for $${total.toFixed(2)} at STORE v3! Check it out!`;
+            shareWhatsAppBtn.href = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+
+            // Clear cart after order (but keep for now)
+            // We'll clear after user clicks "Continue Shopping"
+            // but we can also clear now so that cart is empty after confirmation
+            // We'll clear when they continue.
+        }
+
+        placeOrderBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Get form data
+            const formData = new FormData(checkoutForm);
+            const customer_name = formData.get('customer_name');
+            const customer_whatsapp = formData.get('customer_whatsapp');
+            const delivery_address = formData.get('delivery_address');
+            const payment_method = document.getElementById('selectedPayment').value;
+
+            // Basic validation
+            if (!customer_name || !customer_whatsapp || !delivery_address) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            // Get cart items
+            const cart = getCart();
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+
+            // Prepare order data
+            const orderData = {
+                customer_name: customer_name,
+                customer_whatsapp: customer_whatsapp,
+                delivery_address: delivery_address,
+                payment_method: payment_method,
+                cart: cart
+            };
+
+            // Send to backend via fetch
+            fetch('/checkout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Launch rocket
+                        launchRocket({ order_id: data.order_id, total: data.total });
+                    } else {
+                        alert('Order failed: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Something went wrong. Please try again.');
+                });
+        });
+
+        // Continue Shopping button: clear cart and redirect to home
+        continueShoppingBtn.addEventListener('click', function () {
+            // Clear cart from localStorage
+            localStorage.removeItem('cart');
+            // Update cart UI (base.html will reflect)
+            if (typeof window.CartManager !== 'undefined') {
+                window.CartManager.clearCart();
+            }
+            // Close rocket overlay
+            rocketOverlay.classList.remove('active');
+            // Redirect to home
+            window.location.href = '/';
+        });
+
+        // ================================================
+        // 4. GSAP Tilt Effect on Rocket (optional)
+        // ================================================
+        // Not needed, but we keep the rocket animation.
+
+        console.log('✅ checkout.html — rocket launch ready');
+    })();
+</script>
+{% endblock %}

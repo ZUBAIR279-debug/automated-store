@@ -1,0 +1,392 @@
+{% extends 'base.html' %}
+
+{% block title %}NEXUS · AI Command Center{% endblock %}
+
+{% block extra_head %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    .command-input {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 60px;
+        padding: 0.75rem 1.5rem;
+        color: white;
+        width: 100%;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+    }
+
+    .command-input:focus {
+        outline: none;
+        border-color: #818cf8;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+    }
+
+    .command-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+    }
+
+    .activity-item {
+        border-left: 3px solid #818cf8;
+        padding-left: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .activity-item .time {
+        font-size: 0.65rem;
+        color: #94a3b8;
+    }
+
+    .agent-badge {
+        display: inline-block;
+        padding: 0.15rem 0.7rem;
+        border-radius: 20px;
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .bg-brain {
+        background: #4f46e5;
+        color: white;
+    }
+
+    .bg-accountant {
+        background: #059669;
+        color: white;
+    }
+
+    .bg-fraud {
+        background: #dc2626;
+        color: white;
+    }
+
+    .bg-support {
+        background: #d97706;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-6">
+
+    <!-- ====== TOP BAR ====== -->
+    <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+        <div class="flex items-center gap-4">
+            <h1 class="text-2xl font-extrabold tracking-tight">🚀 NEXUS</h1>
+            <span class="text-xs bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full flex items-center gap-1">
+                <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                All Agents Active
+            </span>
+            <a href="/admin/orders"
+                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-all shadow-md flex items-center gap-2">
+                📦 View All Orders
+            </a>
+            <span class="text-xs text-slate-400" id="liveTime"></span>
+        </div>
+        <div class="flex items-center gap-2">
+            <button class="text-sm bg-indigo-600 hover:bg-indigo-700 px-4 py-1.5 rounded-full transition"
+                onclick="refreshDashboard()">
+                <i class="fas fa-sync-alt mr-1"></i> Sync
+            </button>
+        </div>
+    </div>
+
+    <!-- ====== COMMAND TERMINAL ====== -->
+    <div class="glass-card mb-6">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-terminal text-indigo-400 text-xl"></i>
+            <input type="text" id="commandInput" class="command-input"
+                placeholder="Type a command… e.g., 'Add iPhone 16 with 256GB stock 50' or 'Verify order #5' or 'Check fraud for order 3'" />
+            <button id="sendCommandBtn"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-full transition font-medium flex items-center gap-2">
+                <i class="fas fa-paper-plane"></i> Send
+            </button>
+        </div>
+        <div id="commandResponse" class="mt-3 text-sm text-slate-300 hidden"></div>
+    </div>
+
+    <!-- ====== METRICS CARDS ====== -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="glass-card">
+            <div class="text-xs text-slate-400 uppercase tracking-wider">Total Revenue</div>
+            <div class="text-3xl font-bold" id="metricRevenue">${{ total_revenue|round(2) }}</div>
+            <div class="text-xs text-emerald-400 mt-1">+12.5% vs last month</div>
+        </div>
+        <div class="glass-card">
+            <div class="text-xs text-slate-400 uppercase tracking-wider">Orders</div>
+            <div class="text-3xl font-bold" id="metricOrders">{{ order_count }}</div>
+            <div class="text-xs text-emerald-400 mt-1">+8.3% this week</div>
+        </div>
+        <div class="glass-card">
+            <div class="text-xs text-slate-400 uppercase tracking-wider">Pending</div>
+            <div class="text-3xl font-bold" id="metricPending">{{ pending_orders }}</div>
+            <div class="text-xs text-amber-400 mt-1">Awaiting action</div>
+        </div>
+        <div class="glass-card">
+            <div class="text-xs text-slate-400 uppercase tracking-wider">AI Tasks</div>
+            <div class="text-3xl font-bold" id="metricAITasks">{{ ai_tasks }}</div>
+            <div class="text-xs text-indigo-400 mt-1">Agent logs</div>
+        </div>
+    </div>
+
+    <!-- ====== GRAPHS + ACTIVITY FEED ====== -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Left: Graphs -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Orders Trend -->
+            <div class="glass-card">
+                <h3 class="text-sm font-semibold text-slate-300 mb-3">📈 Orders Trend (Last 7 Days)</h3>
+                <canvas id="ordersChart" height="150"></canvas>
+            </div>
+            <!-- Payment Method Distribution -->
+            <div class="glass-card">
+                <h3 class="text-sm font-semibold text-slate-300 mb-3">🧾 Payment Methods</h3>
+                <canvas id="paymentChart" height="150"></canvas>
+            </div>
+        </div>
+
+        <!-- Right: Activity Feed + Agent Stats -->
+        <div class="space-y-6">
+            <!-- Activity Feed -->
+            <div class="glass-card max-h-80 overflow-y-auto" id="activityFeed">
+                <h3 class="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
+                    <i class="fas fa-bolt text-yellow-400"></i> Live Activity
+                </h3>
+                {% if recent_logs %}
+                {% for log in recent_logs %}
+                <div class="activity-item">
+                    <div class="flex items-center gap-2">
+                        <span class="agent-badge bg-{{ log.agent_name|lower }}">{{ log.agent_name }}</span>
+                        <span class="text-xs text-slate-300">{{ log.action_type }}</span>
+                        <span class="time">{{ log.created_at.strftime('%H:%M:%S') }}</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-0.5">{{ log.description }}</p>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="text-xs text-slate-500">No agent activity yet.</p>
+                {% endif %}
+                <!-- Placeholder for live updates -->
+                <div id="liveActivityPlaceholder"></div>
+            </div>
+
+            <!-- Agent Quick Stats -->
+            <div class="glass-card">
+                <h3 class="text-sm font-semibold text-slate-300 mb-3">🤖 Agent Performance</h3>
+                <div class="space-y-2 text-xs">
+                    <div class="flex justify-between"><span>🧠 Brain</span><span class="text-indigo-300">{{
+                            agent_stats.Brain.tasks }} tasks</span></div>
+                    <div class="flex justify-between"><span>🧾 Accountant</span><span class="text-emerald-300">{{
+                            agent_stats.Accountant.tasks }} tasks</span></div>
+                    <div class="flex justify-between"><span>🛡️ Fraud</span><span class="text-red-300">{{
+                            agent_stats.Fraud.tasks }} tasks</span></div>
+                    <div class="flex justify-between"><span>💬 Support</span><span class="text-amber-300">{{
+                            agent_stats.Support.tasks }} tasks</span></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ====== FOOTER ====== -->
+    <div class="mt-8 text-center text-xs text-slate-500 border-t border-slate-700/50 pt-4">
+        NEXUS v1.0 · All agents operational · Last sync: <span id="lastSyncTime">just now</span>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    (function () {
+        'use strict';
+
+        // ---- Live Time ----
+        function updateTime() {
+            document.getElementById('liveTime').textContent = new Date().toLocaleTimeString();
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // ---- Command Send ----
+        const cmdInput = document.getElementById('commandInput');
+        const sendBtn = document.getElementById('sendCommandBtn');
+        const cmdResponse = document.getElementById('commandResponse');
+
+        function sendCommand() {
+            const cmd = cmdInput.value.trim();
+            if (!cmd) return;
+
+            // Show loading
+            cmdResponse.classList.remove('hidden');
+            cmdResponse.innerHTML = '<i class="fas fa-spinner animate-spin mr-2"></i> Processing...';
+            sendBtn.disabled = true;
+
+            fetch('/admin/agent/command', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ command: cmd })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        cmdResponse.innerHTML = `✅ ${data.message || 'Command executed.'}`;
+                        // Optionally, refresh metrics and feed
+                        refreshDashboard();
+                    } else {
+                        cmdResponse.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
+                    }
+                    cmdInput.value = '';
+                    sendBtn.disabled = false;
+                })
+                .catch(err => {
+                    cmdResponse.innerHTML = `❌ Network error: ${err.message}`;
+                    sendBtn.disabled = false;
+                });
+        }
+
+        sendBtn.addEventListener('click', sendCommand);
+        cmdInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') sendCommand();
+        });
+
+        // ---- Refresh Dashboard (fetch updated metrics and feed) ----
+        window.refreshDashboard = function () {
+            fetch('/admin/dashboard/data')
+                .then(res => res.json())
+                .then(data => {
+                    // Update metrics
+                    document.getElementById('metricRevenue').textContent = '$' + data.total_revenue.toFixed(2);
+                    document.getElementById('metricOrders').textContent = data.order_count;
+                    document.getElementById('metricPending').textContent = data.pending_orders;
+                    document.getElementById('metricAITasks').textContent = data.ai_tasks;
+                    // Update activity feed (if new logs)
+                    if (data.recent_logs && data.recent_logs.length) {
+                        const feed = document.getElementById('activityFeed');
+                        // Keep only header and first few logs; we'll replace the inner content but keep header
+                        // For simplicity, we'll just reload the page? We can do a partial update.
+                        // Actually we can update the feed items.
+                        // For now, just reload page after a short delay? Not ideal.
+                        // We'll use a simpler approach: we'll append new logs to the feed.
+                        // But to keep it clean, we'll just reload the page for now.
+                        location.reload();
+                    }
+                    document.getElementById('lastSyncTime').textContent = 'just now';
+                })
+                .catch(err => console.error('Refresh error:', err));
+        };
+
+        // ---- Init Graphs (from server data) ----
+        // We need to pass chart data from backend. For now, we'll use dummy data.
+        // Ideally, we'd have an API for chart data.
+
+        // Orders trend (last 7 days) - dummy
+        const ctx1 = document.getElementById('ordersChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Orders',
+                    data: [12, 19, 15, 22, 27, 18, 24],
+                    borderColor: '#818cf8',
+                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                    tension: 0.3,
+                    fill: true,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Payment method distribution - dummy
+        const ctx2 = document.getElementById('paymentChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Visa', 'EasyPaisa', 'JazzCash', 'COD'],
+                datasets: [{
+                    data: [30, 25, 20, 25],
+                    backgroundColor: ['#818cf8', '#34d399', '#fbbf24', '#f472b6'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#94a3b8', font: { size: 10 } }
+                    }
+                }
+            }
+        });
+
+        // ---- Auto-refresh feed every 30 seconds ----
+        setInterval(() => {
+            // fetch new logs and append
+            fetch('/admin/agent/logs?limit=3')
+                .then(res => res.json())
+                .then(logs => {
+                    const feed = document.getElementById('activityFeed');
+                    const placeholder = document.getElementById('liveActivityPlaceholder');
+                    // Remove old placeholder
+                    if (placeholder) placeholder.innerHTML = '';
+                    // Add new logs at top
+                    logs.forEach(log => {
+                        const div = document.createElement('div');
+                        div.className = 'activity-item';
+                        div.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <span class="agent-badge bg-${log.agent_name.toLowerCase()}">${log.agent_name}</span>
+                            <span class="text-xs text-slate-300">${log.action_type}</span>
+                            <span class="time">${new Date(log.created_at).toLocaleTimeString()}</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-0.5">${log.description}</p>
+                    `;
+                        feed.insertBefore(div, feed.querySelector('.activity-item') || feed.lastChild);
+                    });
+                    // Keep only last 10 items
+                    const items = feed.querySelectorAll('.activity-item');
+                    if (items.length > 12) {
+                        for (let i = 12; i < items.length; i++) {
+                            items[i].remove();
+                        }
+                    }
+                })
+                .catch(err => console.error('Feed update error:', err));
+        }, 30000);
+
+        // ---- Initial load: fetch logs and update feed ----
+        fetch('/admin/agent/logs?limit=5')
+            .then(res => res.json())
+            .then(logs => {
+                // Already rendered via server-side, but we can update if needed.
+            });
+
+        console.log('✅ NEXUS admin dashboard loaded.');
+    })();
+</script>
+{% endblock %}

@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+
+{% block title %}Product Management — Store v3{% endblock %}
+
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+        <h1 class="text-2xl font-bold text-slate-900">Product Inventory</h1>
+        <button
+            class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition shadow-sm flex items-center gap-2">
+            <i class="fas fa-robot"></i> Add via AI Agent Prompt
+        </button>
+    </div>
+
+    <!-- Product Table -->
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+        <div class="overflow-x-auto" style="max-height:550px; overflow-y:auto;">
+            <table class="w-full text-sm">
+                <thead class="bg-slate-50 text-slate-600 text-xs uppercase tracking-wider sticky top-0">
+                    <tr>
+                        <th class="px-4 py-3 text-left">Image</th>
+                        <th class="px-4 py-3 text-left">Title</th>
+                        <th class="px-4 py-3 text-left">Cost Price</th>
+                        <th class="px-4 py-3 text-left">Selling Price</th>
+                        <th class="px-4 py-3 text-left">Stock</th>
+                        <th class="px-4 py-3 text-left">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-4 py-3"><img
+                                src="https://images.unsplash.com/photo-1696446701796-da61225697cc?w=50&h=50&fit=crop&auto=format"
+                                class="w-10 h-10 rounded-lg object-cover" /></td>
+                        <td class="px-4 py-3 font-medium text-slate-800">iPhone 16 Pro Max</td>
+                        <td class="px-4 py-3 text-slate-600">$1,099</td>
+                        <td class="px-4 py-3 font-semibold text-slate-900">$1,199</td>
+                        <td class="px-4 py-3"><span
+                                class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full">45</span></td>
+                        <td class="px-4 py-3"><button
+                                class="text-indigo-600 hover:text-indigo-800 text-xs font-medium">Edit</button></td>
+                    </tr>
+
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-4 py-3"><img
+                                src="https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=50&h=50&fit=crop&auto=format"
+                                class="w-10 h-10 rounded-lg object-cover" /></td>
+                        <td class="px-4 py-3 font-medium text-slate-800">MacBook Pro M4</td>
+                        <td class="px-4 py-3 text-slate-600">$2,299</td>
+                        <td class="px-4 py-3 font-semibold text-slate-900">$2,499</td>
+                        <td class="px-4 py-3"><span
+                                class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full">23</span></td>
+                        <td class="px-4 py-3"><button
+                                class="text-indigo-600 hover:text-indigo-800 text-xs font-medium">Edit</button></td>
+                    </tr>
+
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-4 py-3"><img
+                                src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=50&h=50&fit=crop&auto=format"
+                                class="w-10 h-10 rounded-lg object-cover" /></td>
+                        <td class="px-4 py-3 font-medium text-slate-800">iPad Pro M4</td>
+                        <td class="px-4 py-3 text-slate-600">$999</td>
+                        <td class="px-4 py-3 font-semibold text-slate-900">$1,099</td>
+                        <td class="px-4 py-3"><span
+                                class="bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full">8</span></td>
+                        <td class="px-4 py-3"><button
+                                class="text-indigo-600 hover:text-indigo-800 text-xs font-medium">Edit</button></td>
+                    </tr>
+
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-4 py-3"><img
+                                src="https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=50&h=50&fit=crop&auto=format"
+                                class="w-10 h-10 rounded-lg object-cover" /></td>
+                        <td class="px-4 py-3 font-medium text-slate-800">AirPods Max</td>
+                        <td class="px-4 py-3 text-slate-600">$449</td>
+                        <td class="px-4 py-3 font-semibold text-slate-900">$499</td>
+                        <td class="px-4 py-3"><span
+                                class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full">32</span></td>
+                        <td class="px-4 py-3"><button
+                                class="text-indigo-600 hover:text-indigo-800 text-xs font-medium">Edit</button></td>
+                    </tr>
+
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-4 py-3"><img
+                                src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=50&h=50&fit=crop&auto=format"
+                                class="w-10 h-10 rounded-lg object-cover" /></td>
+                        <td class="px-4 py-3 font-medium text-slate-800">PlayStation 5 Pro</td>
+                        <td class="px-4 py-3 text-slate-600">$649</td>
+                        <td class="px-4 py-3 font-semibold text-slate-900">$699</td>
+                        <td class="px-4 py-3"><span
+                                class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full">18</span></td>
+                        <td class="px-4 py-3"><button
+                                class="text-indigo-600 hover:text-indigo-800 text-xs font-medium">Edit</button></td>
+                    </tr>
+
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-4 py-3"><img
+                                src="https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=50&h=50&fit=crop&auto=format"
+                                class="w-10 h-10 rounded-lg object-cover" /></td>
+                        <td class="px-4 py-3 font-medium text-slate-800">Logitech MX Master 3S</td>
+                        <td class="px-4 py-3 text-slate-600">$79</td>
+                        <td class="px-4 py-3 font-semibold text-slate-900">$99</td>
+                        <td class="px-4 py-3"><span
+                                class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full">67</span></td>
+                        <td class="px-4 py-3"><button
+                                class="text-indigo-600 hover:text-indigo-800 text-xs font-medium">Edit</button></td>
+                    </tr>
+
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-4 py-3"><img
+                                src="https://images.unsplash.com/photo-1618384887929-16ec33c95b00?w=50&h=50&fit=crop&auto=format"
+                                class="w-10 h-10 rounded-lg object-cover" /></td>
+                        <td class="px-4 py-3 font-medium text-slate-800">Keychron Q1 Pro</td>
+                        <td class="px-4 py-3 text-slate-600">$159</td>
+                        <td class="px-4 py-3 font-semibold text-slate-900">$189</td>
+                        <td class="px-4 py-3"><span
+                                class="bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full">12</span></td>
+                        <td class="px-4 py-3"><button
+                                class="text-indigo-600 hover:text-indigo-800 text-xs font-medium">Edit</button></td>
+                    </tr>
+
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-4 py-3"><img
+                                src="https://images.unsplash.com/photo-1507582020474-9a35b7d455d9?w=50&h=50&fit=crop&auto=format"
+                                class="w-10 h-10 rounded-lg object-cover" /></td>
+                        <td class="px-4 py-3 font-medium text-slate-800">DJI Avant 2</td>
+                        <td class="px-4 py-3 text-slate-600">$999</td>
+                        <td class="px-4 py-3 font-semibold text-slate-900">$1,099</td>
+                        <td class="px-4 py-3"><span
+                                class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full">9</span></td>
+                        <td class="px-4 py-3"><button
+                                class="text-indigo-600 hover:text-indigo-800 text-xs font-medium">Edit</button></td>
+                    </tr>
+
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-4 py-3"><img
+                                src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=50&h=50&fit=crop&auto=format"
+                                class="w-10 h-10 rounded-lg object-cover" /></td>
+                        <td class="px-4 py-3 font-medium text-slate-800">Samsung Odyssey Neo G9</td>
+                        <td class="px-4 py-3 text-slate-600">$1,299</td>
+                        <td class="px-4 py-3 font-semibold text-slate-900">$1,499</td>
+                        <td class="px-4 py-3"><span
+                                class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full">7</span></td>
+                        <td class="px-4 py-3"><button
+                                class="text-indigo-600 hover:text-indigo-800 text-xs font-medium">Edit</button></td>
+                    </tr>
+
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-4 py-3"><img
+                                src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=50&h=50&fit=crop&auto=format"
+                                class="w-10 h-10 rounded-lg object-cover" /></td>
+                        <td class="px-4 py-3 font-medium text-slate-800">Apple Watch Ultra 2</td>
+                        <td class="px-4 py-3 text-slate-600">$699</td>
+                        <td class="px-4 py-3 font-semibold text-slate-900">$799</td>
+                        <td class="px-4 py-3"><span
+                                class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full">28</span></td>
+                        <td class="px-4 py-3"><button
+                                class="text-indigo-600 hover:text-indigo-800 text-xs font-medium">Edit</button></td>
+                    </tr>
+
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-4 py-3"><img
+                                src="https://images.unsplash.com/photo-1601597111158-2fceff292cdc?w=50&h=50&fit=crop&auto=format"
+                                class="w-10 h-10 rounded-lg object-cover" /></td>
+                        <td class="px-4 py-3 font-medium text-slate-800">ASUS ROG Ally X</td>
+                        <td class="px-4 py-3 text-slate-600">$599</td>
+                        <td class="px-4 py-3 font-semibold text-slate-900">$649</td>
+                        <td class="px-4 py-3"><span
+                                class="bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full">5</span></td>
+                        <td class="px-4 py-3"><button
+                                class="text-indigo-600 hover:text-indigo-800 text-xs font-medium">Edit</button></td>
+                    </tr>
+
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-4 py-3"><img
+                                src="https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=50&h=50&fit=crop&auto=format"
+                                class="w-10 h-10 rounded-lg object-cover" /></td>
+                        <td class="px-4 py-3 font-medium text-slate-800">Nintendo Switch OLED</td>
+                        <td class="px-4 py-3 text-slate-600">$329</td>
+                        <td class="px-4 py-3 font-semibold text-slate-900">$349</td>
+                        <td class="px-4 py-3"><span
+                                class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full">21</span></td>
+                        <td class="px-4 py-3"><button
+                                class="text-indigo-600 hover:text-indigo-800 text-xs font-medium">Edit</button></td>
+                    </tr>
+
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-4 py-3"><img
+                                src="https://images.unsplash.com/photo-1609091839311-d5367f1f7a0c?w=50&h=50&fit=crop&auto=format"
+                                class="w-10 h-10 rounded-lg object-cover" /></td>
+                        <td class="px-4 py-3 font-medium text-slate-800">Anker Prime Power Bank</td>
+                        <td class="px-4 py-3 text-slate-600">$89</td>
+                        <td class="px-4 py-3 font-semibold text-slate-900">$109</td>
+                        <td class="px-4 py-3"><span
+                                class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full">43</span></td>
+                        <td class="px-4 py-3"><button
+                                class="text-indigo-600 hover:text-indigo-800 text-xs font-medium">Edit</button></td>
+                    </tr>
+
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-4 py-3"><img
+                                src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=50&h=50&fit=crop&auto=format"
+                                class="w-10 h-10 rounded-lg object-cover" /></td>
+                        <td class="px-4 py-3 font-medium text-slate-800">GoPro Hero 13</td>
+                        <td class="px-4 py-3 text-slate-600">$399</td>
+                        <td class="px-4 py-3 font-semibold text-slate-900">$449</td>
+                        <td class="px-4 py-3"><span
+                                class="bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full">16</span></td>
+                        <td class="px-4 py-3"><button
+                                class="text-indigo-600 hover:text-indigo-800 text-xs font-medium">Edit</button></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    (function () {
+        'use strict';
+        if (typeof gsap !== 'undefined') {
+            gsap.from('tr', {
+                scrollTrigger: {
+                    trigger: 'table',
+                    start: 'top 95%',
+                    toggleActions: 'play none none none'
+                },
+                opacity: 0,
+                x: -10,
+                duration: 0.3,
+                stagger: 0.03,
+                ease: 'power1.out'
+            });
+        }
+        console.log('✅ admin/products.html — inventory ready');
+    })();
+</script>
+{% endblock %}
